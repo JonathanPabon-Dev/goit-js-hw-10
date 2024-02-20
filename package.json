@@ -1,5 +1,5 @@
 {
-  "name": "parcel-project-template",
+  "name": "goit-js-hw-10",
   "version": "2.0.0",
   "description": "",
   "homepage": "https://jonathanpabon-dev.github.io/goit-js-hw-10/",
@@ -22,9 +22,13 @@
   },
   "devDependencies": {
     "@parcel/transformer-sass": "^2.6.0",
+    "axios": "^1.6.7",
+    "buffer": "^6.0.3",
+    "notiflix": "^3.2.7",
     "parcel": "^2.6.0",
     "parcel-reporter-clean-dist": "^1.0.4",
-    "posthtml-include": "^1.7.4"
+    "posthtml-include": "^1.7.4",
+    "slim-select": "^2.8.1"
   },
   "browserslist": "> 0.5%, last 2 versions, not dead"
 }
