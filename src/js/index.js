@@ -7,7 +7,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const loader = document.querySelector(`.loader`);
   const catInfo = document.querySelector('.cat-info');
 
+  function pageLoad() {
+    select.classList.add('hidden');
+    loader.classList.add('hidden');
+    catInfo.classList.add('hidden');
+    breedsBind();
+  }
+
   function breedsBind() {
+    loader.classList.remove('hidden');
     fetchBreeds()
       .then(data => {
         fillBreeds(data);
@@ -23,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function fillBreeds(breedsData) {
+    select.classList.remove('hidden');
     const slectOptionsArray = breedsData.map(item => {
       return {
         text: item.name,
@@ -36,26 +45,32 @@ document.addEventListener('DOMContentLoaded', () => {
       events: {
         afterChange: newValue => {
           if (newValue) {
-            const id = newValue[0].value;
-            const breedData = breedsData.filter(breed => breed.id == id)[0];
-            fetchCatByBreed(id)
-              .then(catData => {
-                catInfo.textContent = '';
-                createCard(catData[0], breedData);
-                loader.classList.add('hidden');
-              })
-              .catch(() => {
-                Notiflix.Notify.failure(
-                  'Oops! Something went wrong! Try reloading the page!'
-                );
-              })
-              .finally(() => {
-                loader.classList.add('hidden');
-              });
+            valueChange(newValue, breedsData);
           }
         },
       },
     });
+  }
+
+  function valueChange(newValue, breedsData) {
+    const id = newValue[0].value;
+    const breedData = breedsData.filter(breed => breed.id == id)[0];
+    loader.classList.remove('hidden');
+    fetchCatByBreed(id)
+      .then(catData => {
+        catInfo.classList.remove('hidden');
+        catInfo.textContent = '';
+        createCard(catData[0], breedData);
+      })
+      .catch(() => {
+        catInfo.classList.add('hidden');
+        Notiflix.Notify.failure(
+          'Oops! Something went wrong! Try reloading the page!'
+        );
+      })
+      .finally(() => {
+        loader.classList.add('hidden');
+      });
   }
 
   function createCard(cat, breed) {
@@ -79,5 +94,5 @@ document.addEventListener('DOMContentLoaded', () => {
     catDetails.classList.add('card-body');
   }
 
-  breedsBind();
+  pageLoad();
 });
