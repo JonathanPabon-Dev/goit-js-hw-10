@@ -8,9 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const catInfo = document.querySelector('.cat-info');
 
   function pageLoad() {
-    select.classList.add('hidden');
-    loader.classList.add('hidden');
-    catInfo.classList.add('hidden');
+    resetPage();
     breedsBind();
   }
 
@@ -41,7 +39,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     new SlimSelect({
       select: '.breed-select',
-      data: slectOptionsArray,
+      data: [
+        { placeholder: true, text: 'Choose a Breed' },
+        ...slectOptionsArray,
+      ],
       events: {
         afterChange: newValue => {
           if (newValue) {
@@ -49,28 +50,35 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         },
       },
+      settings: {
+        showSearch: true,
+      },
     });
   }
 
   function valueChange(newValue, breedsData) {
     const id = newValue[0].value;
-    const breedData = breedsData.filter(breed => breed.id == id)[0];
-    loader.classList.remove('hidden');
-    fetchCatByBreed(id)
-      .then(catData => {
-        catInfo.classList.remove('hidden');
-        catInfo.textContent = '';
-        createCard(catData[0], breedData);
-      })
-      .catch(() => {
-        catInfo.classList.add('hidden');
-        Notiflix.Notify.failure(
-          'Oops! Something went wrong! Try reloading the page!'
-        );
-      })
-      .finally(() => {
-        loader.classList.add('hidden');
-      });
+    if (id) {
+      const breedData = breedsData.filter(breed => breed.id == id)[0];
+      loader.classList.remove('hidden');
+      fetchCatByBreed(id)
+        .then(catData => {
+          catInfo.classList.remove('hidden');
+          catInfo.textContent = '';
+          createCard(catData[0], breedData);
+        })
+        .catch(() => {
+          catInfo.classList.add('hidden');
+          Notiflix.Notify.failure(
+            'Oops! Something went wrong! Try reloading the page!'
+          );
+        })
+        .finally(() => {
+          loader.classList.add('hidden');
+        });
+    } else {
+      resetPage();
+    }
   }
 
   function createCard(cat, breed) {
@@ -92,6 +100,12 @@ document.addEventListener('DOMContentLoaded', () => {
     catInfo.classList.add('card');
     catInfo.append(catImg, catDetails);
     catDetails.classList.add('card-body');
+  }
+
+  function resetPage() {
+    select.classList.add('hidden');
+    loader.classList.add('hidden');
+    catInfo.classList.add('hidden');
   }
 
   pageLoad();
